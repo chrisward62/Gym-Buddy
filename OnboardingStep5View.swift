@@ -7,7 +7,6 @@ struct OnboardingStep5View: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 28) {
-
                 VStack(spacing: 8) {
                     Text("Partner preferences")
                         .font(.system(size: 28, weight: .black, design: .rounded))
@@ -23,7 +22,6 @@ struct OnboardingStep5View: View {
                     Text("Partner gender")
                         .font(.system(size: 15, weight: .semibold, design: .rounded))
                         .foregroundColor(.dumbelleTextPrimary)
-
                     HStack(spacing: 8) {
                         ForEach(coordinator.genderOptions, id: \.self) { option in
                             Button {
@@ -46,7 +44,6 @@ struct OnboardingStep5View: View {
                     Text("Experience level")
                         .font(.system(size: 15, weight: .semibold, design: .rounded))
                         .foregroundColor(.dumbelleTextPrimary)
-
                     HStack(spacing: 8) {
                         ForEach(coordinator.experienceLevels, id: \.self) { level in
                             Button {
@@ -69,7 +66,6 @@ struct OnboardingStep5View: View {
                     Text("Your goals")
                         .font(.system(size: 15, weight: .semibold, design: .rounded))
                         .foregroundColor(.dumbelleTextPrimary)
-
                     FlowLayout(items: coordinator.goals) { goal in
                         Button {
                             if coordinator.selectedGoals.contains(goal) {
@@ -83,9 +79,23 @@ struct OnboardingStep5View: View {
                     }
                 }
 
-                DumbelleButton(title: "Find My Gym Partners 🏋️", variant: .primary) {
-                    coordinator.complete()
-                    auth.hasCompletedOnboarding = true
+                // Error message
+                if !coordinator.saveError.isEmpty {
+                    Text(coordinator.saveError)
+                        .font(.system(size: 13, design: .rounded))
+                        .foregroundColor(.dumbelleDestructive)
+                        .multilineTextAlignment(.center)
+                }
+
+                // Complete button
+                DumbelleButton(
+                    title: coordinator.isSaving ? "Saving..." : "Find My Gym Partners 🏋️",
+                    variant: .primary,
+                    isLoading: coordinator.isSaving
+                ) {
+                    coordinator.complete(auth: auth) { success in
+                        // auth.hasCompletedOnboarding is set inside complete() on success
+                    }
                 }
                 .padding(.top, 8)
 

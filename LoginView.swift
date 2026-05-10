@@ -6,7 +6,6 @@ struct LoginView: View {
     @State private var password = ""
     @State private var isLoading = false
     @State private var showSignUp = false
-    @State private var errorMessage = ""
 
     var body: some View {
         ZStack {
@@ -35,10 +34,11 @@ struct LoginView: View {
                     }
 
                     // Error
-                    if !errorMessage.isEmpty {
-                        Text(errorMessage)
+                    if !auth.errorMessage.isEmpty {
+                        Text(auth.errorMessage)
                             .font(.system(size: 13, design: .rounded))
                             .foregroundColor(.dumbelleDestructive)
+                            .multilineTextAlignment(.center)
                     }
 
                     // Login Button
@@ -79,12 +79,11 @@ struct LoginView: View {
 
     func handleLogin() {
         guard !email.isEmpty, !password.isEmpty else {
-            errorMessage = "Please fill in all fields"
+            auth.errorMessage = "Please fill in all fields"
             return
         }
         isLoading = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            auth.login(email: email, password: password)
+        auth.login(email: email, password: password) { success in
             isLoading = false
         }
     }

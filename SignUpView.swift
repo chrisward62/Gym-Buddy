@@ -7,12 +7,10 @@ struct SignUpView: View {
     @State private var password = ""
     @State private var confirmPassword = ""
     @State private var isLoading = false
-    @State private var errorMessage = ""
 
     var body: some View {
         ZStack {
             Color.dumbelleBackground.ignoresSafeArea()
-
             ScrollView {
                 VStack(spacing: 32) {
 
@@ -37,10 +35,11 @@ struct SignUpView: View {
                     }
 
                     // Error
-                    if !errorMessage.isEmpty {
-                        Text(errorMessage)
+                    if !auth.errorMessage.isEmpty {
+                        Text(auth.errorMessage)
                             .font(.system(size: 13, design: .rounded))
                             .foregroundColor(.dumbelleDestructive)
+                            .multilineTextAlignment(.center)
                     }
 
                     // Sign Up Button
@@ -68,17 +67,23 @@ struct SignUpView: View {
 
     func handleSignUp() {
         guard !email.isEmpty, !password.isEmpty, !confirmPassword.isEmpty else {
-            errorMessage = "Please fill in all fields"
+            auth.errorMessage = "Please fill in all fields"
             return
         }
         guard password == confirmPassword else {
-            errorMessage = "Passwords do not match"
+            auth.errorMessage = "Passwords do not match"
+            return
+        }
+        guard password.count >= 6 else {
+            auth.errorMessage = "Password must be at least 6 characters"
             return
         }
         isLoading = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            auth.signUp(email: email, password: password)
+        auth.signUp(email: email, password: password) { success in
             isLoading = false
+            if success {
+                dismiss()
+            }
         }
     }
 }

@@ -1,24 +1,24 @@
 import SwiftUI
-
+ 
 struct MainTabView: View {
     var body: some View {
         TabView {
-            Text("Home")
+            DiscoverView()
                 .tabItem {
                     Label("Discover", systemImage: "flame.fill")
                 }
-
-            Text("Matches")
+ 
+            MatchesView()
                 .tabItem {
                     Label("Matches", systemImage: "heart.fill")
                 }
-
-            Text("Sessions")
+ 
+            SessionsView()
                 .tabItem {
                     Label("Sessions", systemImage: "calendar")
                 }
-
-            Text("Profile")
+ 
+            ProfileView()
                 .tabItem {
                     Label("Profile", systemImage: "person.fill")
                 }
@@ -27,3 +27,4 @@ struct MainTabView: View {
         .preferredColorScheme(.dark)
     }
 }
+ 
